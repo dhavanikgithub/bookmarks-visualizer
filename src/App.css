@@ -1,0 +1,13 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+label {
+  margin-bottom: 20px;
+}
+
+.MuiListItemText-root {
+  word-break: break-word;
+}
