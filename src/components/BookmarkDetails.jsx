@@ -1,38 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-
-
-
-
-function BookmarkDetails({ url }) {
-
-    const [details, setDetails] = useState(null);
-
-    async function fetchData() {
-        try {
-            console.log(encodeURIComponent(url))
-            const response = await fetch(`http://localhost:3001/fetch-url?url=${encodeURIComponent(url)}`);
-            const data = await response.json();
-            setDetails(data);
-        } catch (error) {
-            console.error('Error fetching URL details:', error);
-        }
-    }
-
-    useEffect(() => {
-        fetchData();
-    }, [url]);
-
-    if (!details) {
-        return <div>Loading...</div>;
-    }
-
-    return (
+function BookmarkDetails({ urlDetails }) {
+    return ( urlDetails && 
         <div>
-            <h2>{details.title}</h2>
-            <p>{details.description}</p>
-            {details.imageUrl && <img src={details.imageUrl} alt={details.imageAlt ? details.imageAlt : 'Preview'} />}
-            {details.faviconUrl && <img src={details.faviconUrl} alt="Favicon" />}
+            <h2>{urlDetails.title}</h2>
+            <p>{urlDetails.description}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                {urlDetails.faviconUrl && <img src={urlDetails.faviconUrl} alt="Favicon" />}
+                {urlDetails.imageUrl && <img src={urlDetails.imageUrl} alt={urlDetails.imageAlt ? urlDetails.imageAlt : 'Preview'} />}
+            </div>
         </div>
     );
 }

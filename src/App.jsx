@@ -3,10 +3,14 @@ import BookmarkTree from './components/BookmarkTree';
 import { Button } from '@mui/material';
 import axios from 'axios';
 import BookmarkDetails from './components/BookmarkDetails';
+import './App.css';
 
 function App() {
   const [bookmarks, setBookmarks] = useState(null);
-
+  const [inputURL, setInputURL] = useState("");
+  const [urlToFetch, setUrlToFetch] = useState("");
+  const [details, setDetails] = useState('');
+  const [error, setError] = useState(null);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -14,7 +18,7 @@ function App() {
     reader.onload = (e) => {
       const htmlContent = e.target.result;
       const parsedBookmarks = parseBookmarks(htmlContent);
-      console.log(parsedBookmarks)
+      console.log(parsedBookmarks);
       setBookmarks(parsedBookmarks);
     };
     reader.readAsText(file);
@@ -66,10 +70,54 @@ function App() {
     return children;
   };
 
+  async function fetchData(url) {
+    try {
+        console.log(encodeURIComponent(url))
+        const response = await fetch(`http://localhost:3001/fetch-url?url=${encodeURIComponent(url)}`);
+        if(response.status === 200) {
+          const data = await response.json();
+          setDetails(data);
+        }
+        else{
+          const data = await response.json();
+          console.log(data.error);
+          setError(data.error);
+          setDetails('');
+        }
+    } catch (error) {
+        console.log('Error fetching URL details:', error);
+        setDetails('');
+    }
+}
+
+  const handleFetchDetails = async () => {
+    setError(null);
+    setDetails(null);
+    await fetchData(inputURL);
+    setUrlToFetch(inputURL);
+  };
+  
+
   return (
     <div className="App">
-      <BookmarkDetails url="https://js-nzvb6z.stackblitz.io/" />
       {/* <input
+        accept=".html"
+        type="text"
+        onChange={(e) => setInputURL(e.target.value)}
+        placeholder='Enter URL'
+        value={inputURL}
+      />
+      <input
+        accept=".html"
+        type="submit"
+        value={"Fetch Details"}
+        onClick={handleFetchDetails}
+      />
+      {error && <p>{error}</p>}
+      {details === null && <div className="loader"></div> }
+      {urlToFetch && <BookmarkDetails url={urlToFetch} urlDetails={details} />} */}
+
+      <input
         accept=".html"
         style={{ display: 'none' }}
         id="upload-file"
@@ -81,7 +129,7 @@ function App() {
           Upload Bookmarks HTML
         </Button>
       </label>
-      {bookmarks && <BookmarkTree nodes={bookmarks} />} */}
+      {bookmarks && <BookmarkTree nodes={bookmarks} />}
     </div>
   );
 }

@@ -83,7 +83,7 @@ const BookmarkTree = ({ nodes }) => {
                         <Bookmark />
                     )}
                 </ListItemIcon>
-                <a target="_blank" href={node.url}><ListItemText  primary={node.name} /></a>
+                <ListItemText><a target="_blank" href={node.url} style={{ textDecoration: 'none' }}>{node.name}</a></ListItemText>
                 <Button variant="outlined" onClick={handleFetchDetails} style={{ zIndex: 100 }}>
                     Fetch Details
                 </Button>
